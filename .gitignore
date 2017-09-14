@@ -12,3 +12,4 @@ depcomp
 install-sh
 stamp-h1
 compile
+src/pulsetraymixer
