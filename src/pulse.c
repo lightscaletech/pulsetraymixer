@@ -57,3 +57,5 @@ void pulse_cleanup() {
     pa_context_unref(ctx);
     pa_mainloop_free(mloop);
 }
+
+pa_context * pulse_get_context() { return ctx; }

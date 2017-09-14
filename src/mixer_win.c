@@ -1,6 +1,8 @@
 #include "mixer_win.h"
 #include "mixer_control.h"
 
+#include "pulse_control.h"
+
 #include <gtk/gtk.h>
 #include <math.h>
 
@@ -114,6 +116,8 @@ void mixer_win_source_add(uint32_t idx,
     MixerControl * mc = mixer_control_new(idx, icon);
     gtk_container_add(GTK_CONTAINER(boxsource), mc->container);
     gtk_widget_show_all(mc->container);
+    mixer_control_set_mute_cb(mc, pulse_ctl_sink_input_mute);
+    mixer_control_set_volume_cb(mc, pulse_ctl_sink_input_volume);
     mixer_control_array_add(&mcasource, mc);
     update_control(mc, label, muted, vol);
 }
@@ -139,6 +143,8 @@ void mixer_win_sink_add(uint32_t idx,
     gtk_container_add(GTK_CONTAINER(boxsink), mc->container);
     gtk_widget_show_all(mc->container);
     mixer_control_array_add(&mcasink, mc);
+    mixer_control_set_mute_cb(mc, pulse_ctl_sink_mute);
+    mixer_control_set_volume_cb(mc, pulse_ctl_sink_volume);
     update_control(mc, label, muted, vol);
 }
 

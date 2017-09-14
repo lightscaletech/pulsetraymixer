@@ -26,5 +26,4 @@ void mixer_win_sink_add(uint32_t, const char *, const char *, gboolean, double);
 void mixer_win_sink_update(uint32_t, const char *, gboolean, double);
 void mixer_win_sink_remove(uint32_t);
 
-
 #endif

@@ -6,6 +6,22 @@
 #include <stdlib.h>
 #include <math.h>
 
+static gboolean vol_change(GtkRange * r, GtkScrollType sc,
+                       gdouble val, gpointer ud) {
+    MixerControl * mc = (MixerControl *) ud;
+    mixer_ctl_volume_cb cb = mc->vol_cb;
+    if(cb == NULL) return FALSE;
+    cb(mc->pa_idx, val);
+    return FALSE;
+}
+
+static void mute_change(GtkToggleButton * tb, gpointer ud) {
+    MixerControl * mc = (MixerControl *) ud;
+    mixer_ctl_mute_cb cb = mc->mute_cb;
+    if(cb == NULL) return;
+    cb(mc->pa_idx, gtk_toggle_button_get_active(tb));
+}
+
 MixerControl * mixer_control_new(uint32_t idx, const char * icon) {
     MixerControl * mc = malloc(sizeof(MixerControl));
     double vol_max = PA_VOLUME_NORM;
@@ -37,6 +53,10 @@ MixerControl * mixer_control_new(uint32_t idx, const char * icon) {
     gtk_scale_set_draw_value(GTK_SCALE(mc->slider), FALSE);
     gtk_range_set_inverted(GTK_RANGE(mc->slider), TRUE);
 
+    // Connect events
+    g_signal_connect(mc->slider, "change-value", G_CALLBACK(vol_change), mc);
+    g_signal_connect(mc->btnMute, "toggled", G_CALLBACK(mute_change), mc);
+
     // Add everything to there containers.
     gtk_container_add(GTK_CONTAINER(btnBox), mc->btnMute);
     gtk_container_add(GTK_CONTAINER(btnBox), mc->btnSettings);
@@ -65,6 +85,14 @@ void mixer_control_set_muted(MixerControl * mc, gboolean mute){
 
 void mixer_control_set_volume(MixerControl * mc, double vol){
     gtk_range_set_value(GTK_RANGE(mc->slider), vol);
+}
+
+void mixer_control_set_mute_cb(MixerControl * mc, mixer_ctl_mute_cb cb) {
+    mc->mute_cb = cb;
+}
+
+void mixer_control_set_volume_cb(MixerControl * mc, mixer_ctl_volume_cb cb) {
+    mc->vol_cb = cb;
 }
 
 MixerControlArray * mixer_control_array_new() { return pulse_item_array_new(); }
