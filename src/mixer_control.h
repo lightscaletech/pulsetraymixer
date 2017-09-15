@@ -27,7 +27,7 @@ struct _MixerControl {
 
 typedef struct _MixerControl MixerControl;
 
-MixerControl * mixer_control_new(uint32_t idx, const char * icon);
+MixerControl * mixer_control_new(uint32_t idx, const char * icon, gboolean);
 void mixer_control_free(MixerControl *);
 void mixer_control_set_label(MixerControl *, const char *);
 void mixer_control_set_muted(MixerControl *, gboolean);

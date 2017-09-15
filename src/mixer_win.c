@@ -113,7 +113,7 @@ static void update_control(MixerControl * ctl, const char * label,
 void mixer_win_source_add(uint32_t idx,
                           const char * label, const char * icon,
                           gboolean muted, double vol){
-    MixerControl * mc = mixer_control_new(idx, icon);
+    MixerControl * mc = mixer_control_new(idx, icon, TRUE);
     gtk_container_add(GTK_CONTAINER(boxsource), mc->container);
     gtk_widget_show_all(mc->container);
     mixer_control_set_mute_cb(mc, pulse_ctl_sink_input_mute);
@@ -139,7 +139,7 @@ void mixer_win_sink_add(uint32_t idx,
                         const char * label, const char * icon,
                         gboolean muted, double vol) {
 
-    MixerControl * mc = mixer_control_new(idx, icon);
+    MixerControl * mc = mixer_control_new(idx, icon, FALSE);
     gtk_container_add(GTK_CONTAINER(boxsink), mc->container);
     gtk_widget_show_all(mc->container);
     mixer_control_array_add(&mcasink, mc);

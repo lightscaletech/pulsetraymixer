@@ -22,7 +22,7 @@ static void mute_change(GtkToggleButton * tb, gpointer ud) {
     cb(mc->pa_idx, gtk_toggle_button_get_active(tb));
 }
 
-MixerControl * mixer_control_new(uint32_t idx, const char * icon) {
+MixerControl * mixer_control_new(uint32_t idx, const char * icon, gboolean smenu) {
     MixerControl * mc = malloc(sizeof(MixerControl));
     double vol_max = PA_VOLUME_NORM;
     double vol_min = PA_VOLUME_MUTED;
@@ -42,7 +42,13 @@ MixerControl * mixer_control_new(uint32_t idx, const char * icon) {
     mc->label = gtk_label_new("");
 
     mc->btnMute = gtk_toggle_button_new_with_label("M");
-    mc->btnSettings = gtk_button_new_with_label("S");
+    if(smenu) {
+        GtkWidget * btnimg = gtk_image_new_from_icon_name(
+            "preferences-system", GTK_ICON_SIZE_MENU);
+        mc->btnSettings = gtk_menu_button_new();
+        gtk_button_set_image(GTK_BUTTON(mc->btnSettings), btnimg);
+    }
+    else mc->btnSettings = NULL;
 
     // Configure the label
     gtk_label_set_angle(GTK_LABEL(mc->label), 90);
@@ -59,7 +65,7 @@ MixerControl * mixer_control_new(uint32_t idx, const char * icon) {
 
     // Add everything to there containers.
     gtk_container_add(GTK_CONTAINER(btnBox), mc->btnMute);
-    gtk_container_add(GTK_CONTAINER(btnBox), mc->btnSettings);
+    if (smenu) gtk_container_add(GTK_CONTAINER(btnBox), mc->btnSettings);
     gtk_container_add(GTK_CONTAINER(vBox), mc->icon);
     gtk_container_add(GTK_CONTAINER(vBox), mc->slider);
     gtk_container_add(GTK_CONTAINER(hBox), mc->label);
