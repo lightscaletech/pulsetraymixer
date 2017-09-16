@@ -1,4 +1,5 @@
 #include "mixer_control.h"
+#include "sink_menu.h"
 
 #include <gtk/gtk.h>
 #include <pulse/volume.h>
@@ -20,6 +21,12 @@ static void mute_change(GtkToggleButton * tb, gpointer ud) {
     mixer_ctl_mute_cb cb = mc->mute_cb;
     if(cb == NULL) return;
     cb(mc->pa_idx, gtk_toggle_button_get_active(tb));
+}
+
+static void settings_activate(GtkButton * btn, void * ud) {
+    MixerControl * mc = (MixerControl *) ud;
+    sink_menu_set_sink_input(mc->pa_idx);
+    sink_menu_set_selected(mc->sink_idx);
 }
 
 MixerControl * mixer_control_new(uint32_t idx, const char * icon, gboolean smenu) {
@@ -47,6 +54,8 @@ MixerControl * mixer_control_new(uint32_t idx, const char * icon, gboolean smenu
             "preferences-system", GTK_ICON_SIZE_MENU);
         mc->btnSettings = gtk_menu_button_new();
         gtk_button_set_image(GTK_BUTTON(mc->btnSettings), btnimg);
+        g_signal_connect(mc->btnSettings, "clicked",
+                         G_CALLBACK(settings_activate), mc);
     }
     else mc->btnSettings = NULL;
 
@@ -99,6 +108,14 @@ void mixer_control_set_mute_cb(MixerControl * mc, mixer_ctl_mute_cb cb) {
 
 void mixer_control_set_volume_cb(MixerControl * mc, mixer_ctl_volume_cb cb) {
     mc->vol_cb = cb;
+}
+
+void mixer_control_set_sink(MixerControl * mc, uint32_t idx) {
+    mc->sink_idx = idx;
+}
+
+void mixer_control_set_menu(MixerControl * mc, GtkWidget * menu) {
+    gtk_menu_button_set_popup(GTK_MENU_BUTTON(mc->btnSettings), menu);
 }
 
 MixerControlArray * mixer_control_array_new() { return pulse_item_array_new(); }

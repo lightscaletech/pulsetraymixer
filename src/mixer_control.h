@@ -14,6 +14,7 @@ typedef void(* mixer_ctl_volume_cb)(uint32_t, double);
 
 struct _MixerControl {
     uint32_t pa_idx;
+    uint32_t sink_idx;
     GtkWidget * container;
     GtkWidget * icon;
     GtkWidget * slider;
@@ -34,6 +35,8 @@ void mixer_control_set_muted(MixerControl *, gboolean);
 void mixer_control_set_mute_cb(MixerControl *, mixer_ctl_mute_cb);
 void mixer_control_set_volume(MixerControl *, double);
 void mixer_control_set_volume_cb(MixerControl *, mixer_ctl_volume_cb);
+void mixer_control_set_menu(MixerControl *, GtkWidget *);
+void mixer_control_set_sink(MixerControl *, uint32_t);
 
 typedef PulseItemArray MixerControlArray;
 

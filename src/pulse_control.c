@@ -28,6 +28,11 @@ void pulse_ctl_sink_input_volume(uint32_t idx, double vol) {
     pa_context_set_sink_input_volume(ctx, idx, &cvol, success, NULL);
 }
 
+void pulse_ctl_sink_input_move(uint32_t idx, uint32_t sink_idx) {
+    pa_context * ctx = pulse_get_context();
+    pa_context_move_sink_input_by_index(ctx, idx, sink_idx, success, NULL);
+}
+
 void pulse_ctl_sink_mute(uint32_t idx, int mute) {
     pa_context * ctx = pulse_get_context();
     pa_context_set_sink_mute_by_index(ctx, idx, mute, success, NULL);

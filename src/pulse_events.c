@@ -64,17 +64,17 @@ static void source_new_info(pa_context * ctx, const pa_sink_input_info * info,
                             int eol, void * ud) {
     if(info == NULL) return;
     pa_volume_t vol = pa_cvolume_avg(&(info->volume));
-    mixer_win_source_add(info->index,
-                       get_source_name(info),
-                       get_source_icon_name(info),
-                       info->mute, vol);
+    mixer_win_source_add(info->index, info->sink,
+                         get_source_name(info),
+                         get_source_icon_name(info),
+                         info->mute, vol);
 }
 
 static void source_change_info(pa_context * ctx, const pa_sink_input_info * info,
                             int eol, void * ud) {
     if(info == NULL) return;
     pa_volume_t vol = pa_cvolume_avg(&(info->volume));
-    mixer_win_source_update(info->index, get_source_name(info), info->mute,
+    mixer_win_source_update(info->index, info->sink, get_source_name(info), info->mute,
                           vol);
 }
 
