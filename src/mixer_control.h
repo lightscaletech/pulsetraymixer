@@ -3,14 +3,19 @@
 
 #include "pulse_item_array.h"
 
+#include <gdk/gdk.h>
 #include <stdint.h>
 
-typedef struct _GtkWidget GtkWidget;
 typedef int gint;
 typedef gint gboolean;
+typedef struct _GtkWidget GtkWidget;
 
 typedef void(* mixer_ctl_mute_cb)(uint32_t, int);
 typedef void(* mixer_ctl_volume_cb)(uint32_t, double);
+
+typedef void(* menu_btn_click)(int, int, GtkWidget *, GdkEvent *);
+
+menu_btn_click mixer_control_menu_click_cb;
 
 struct _MixerControl {
     uint32_t pa_idx;
@@ -31,6 +36,7 @@ typedef struct _MixerControl MixerControl;
 MixerControl * mixer_control_new(uint32_t idx, const char * icon, gboolean);
 void mixer_control_free(MixerControl *);
 void mixer_control_set_label(MixerControl *, const char *);
+char * mixer_control_get_label(MixerControl *);
 void mixer_control_set_muted(MixerControl *, gboolean);
 void mixer_control_set_mute_cb(MixerControl *, mixer_ctl_mute_cb);
 void mixer_control_set_volume(MixerControl *, double);

@@ -16,6 +16,11 @@ static GtkWidget * boxsource = NULL;
 static MixerControlArray * mcasink = NULL;
 static MixerControlArray * mcasource = NULL;
 
+static void menu_sink_select(int si_idx, int current_sink,
+                             GtkWidget * btn, GdkEvent * ev) {
+    sink_menu_create(mcasink, si_idx, current_sink, btn, ev);
+}
+
 static gboolean focus_loss(GtkWidget * widg, GdkEvent * ev, gpointer ud){
     mixer_win_hide();
     return TRUE;
@@ -23,14 +28,15 @@ static gboolean focus_loss(GtkWidget * widg, GdkEvent * ev, gpointer ud){
 
 const GtkWidget * mixer_win_init() {
     GtkWidget * divi = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+
+    mixer_control_menu_click_cb = menu_sink_select;
+
     win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     boxmain = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     boxsink = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     boxsource = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     mcasink = mixer_control_array_new();
     mcasource = mixer_control_array_new();
-
-    sink_menu_init();
 
     gtk_window_set_title(GTK_WINDOW(win), "Mixer");
     gtk_window_set_keep_above(GTK_WINDOW(win), TRUE);
@@ -52,7 +58,6 @@ const GtkWidget * mixer_win_init() {
 
 void mixer_win_free() {
     gtk_widget_destroy(win);
-    sink_menu_free();
 }
 
 void mixer_win_position(GdkEventButton * evbtn) {
@@ -131,7 +136,6 @@ void mixer_win_source_add(uint32_t idx, uint32_t sink_idx,
     gtk_widget_show_all(mc->container);
     mixer_control_set_mute_cb(mc, pulse_ctl_sink_input_mute);
     mixer_control_set_volume_cb(mc, pulse_ctl_sink_input_volume);
-    mixer_control_set_menu(mc, sink_menu_get());
     mixer_control_array_add(&mcasource, mc);
     update_control(mc, label, muted, vol);
     update_source_control(mc, sink_idx);
@@ -161,7 +165,6 @@ void mixer_win_sink_add(uint32_t idx,
     mixer_control_array_add(&mcasink, mc);
     mixer_control_set_mute_cb(mc, pulse_ctl_sink_mute);
     mixer_control_set_volume_cb(mc, pulse_ctl_sink_volume);
-    sink_menu_add(idx, label);
     update_control(mc, label, muted, vol);
 }
 
@@ -175,7 +178,6 @@ void mixer_win_sink_update(uint32_t idx, const char * label,
 void mixer_win_sink_remove(uint32_t idx) {
     MixerControl * mc = mixer_control_array_remove(&mcasink, idx);
     if (mc == NULL) return;
-    sink_menu_remove(idx);
     mixer_control_free(mc);
     resize();
 }

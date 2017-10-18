@@ -9,7 +9,8 @@ typedef struct _GdkEventButton GdkEventButton;
 typedef int gint;
 typedef gint gboolean;
 
-const GtkWidget *  mixer_win_init();
+const GtkWidget * mixer_win_init();
+void mixer_win_free();
 GtkWidget *  mixer_win_get();
 
 void mixer_win_show();

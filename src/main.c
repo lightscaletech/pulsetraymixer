@@ -22,6 +22,7 @@ static void main_loop() {
 
 static void cleanup() {
     pulse_cleanup();
+    mixer_win_free();
 }
 
 int main(int argc, char **argv) {

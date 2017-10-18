@@ -23,10 +23,10 @@ static void mute_change(GtkToggleButton * tb, gpointer ud) {
     cb(mc->pa_idx, gtk_toggle_button_get_active(tb));
 }
 
-static void settings_activate(GtkButton * btn, void * ud) {
+static gboolean settings_activate(GtkWidget * widg, GdkEvent * ev, void * ud) {
     MixerControl * mc = (MixerControl *) ud;
-    sink_menu_set_sink_input(mc->pa_idx);
-    sink_menu_set_selected(mc->sink_idx);
+    mixer_control_menu_click_cb(mc->pa_idx, mc->sink_idx, widg, ev);
+    return FALSE;
 }
 
 MixerControl * mixer_control_new(uint32_t idx, const char * icon, gboolean smenu) {
@@ -50,10 +50,8 @@ MixerControl * mixer_control_new(uint32_t idx, const char * icon, gboolean smenu
 
     mc->btnMute = gtk_toggle_button_new_with_label("M");
     if(smenu) {
-        GtkWidget * btnimg = gtk_image_new_from_icon_name(
-            "preferences-system", GTK_ICON_SIZE_MENU);
-        mc->btnSettings = gtk_menu_button_new();
-        gtk_button_set_image(GTK_BUTTON(mc->btnSettings), btnimg);
+        mc->btnSettings =
+            gtk_button_new_from_icon_name("preferences-system", GTK_ICON_SIZE_MENU);
         g_signal_connect(mc->btnSettings, "clicked",
                          G_CALLBACK(settings_activate), mc);
     }
@@ -94,6 +92,10 @@ void mixer_control_set_label(MixerControl * mc, const char * text){
     gtk_label_set_text(GTK_LABEL(mc->label), text);
 }
 
+char * mixer_control_get_label(MixerControl * mc) {
+    gtk_label_get_text(GTK_LABEL(mc->label));
+}
+
 void mixer_control_set_muted(MixerControl * mc, gboolean mute){
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mc->btnMute), mute);
 }
@@ -115,7 +117,7 @@ void mixer_control_set_sink(MixerControl * mc, uint32_t idx) {
 }
 
 void mixer_control_set_menu(MixerControl * mc, GtkWidget * menu) {
-    gtk_menu_button_set_popup(GTK_MENU_BUTTON(mc->btnSettings), menu);
+
 }
 
 MixerControlArray * mixer_control_array_new() { return pulse_item_array_new(); }
