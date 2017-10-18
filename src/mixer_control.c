@@ -57,6 +57,8 @@ MixerControl * mixer_control_new(uint32_t idx, const char * icon, gboolean smenu
     }
     else mc->btnSettings = NULL;
 
+    gtk_widget_set_vexpand(mc->icon, TRUE);
+
     // Configure the label
     gtk_label_set_angle(GTK_LABEL(mc->label), 90);
 
