@@ -41,6 +41,7 @@ const GtkWidget * mixer_win_init() {
     gtk_window_set_title(GTK_WINDOW(win), "Mixer");
     gtk_window_set_keep_above(GTK_WINDOW(win), TRUE);
     gtk_window_set_decorated(GTK_WINDOW(win), FALSE);
+    gtk_window_stick(GTK_WINDOW(win));
 
     gtk_container_add(GTK_CONTAINER(boxmain), boxsource);
     gtk_container_add(GTK_CONTAINER(boxmain), divi);
