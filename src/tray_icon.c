@@ -4,6 +4,7 @@
 #include "mixer_win.h"
 
 #include <gtk/gtk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <stdio.h>
 
 static GtkStatusIcon * status_icon = 0;
@@ -54,11 +55,21 @@ static void make_menu() {
 }
 
 void tray_icon_init() {
-    status_icon = gtk_status_icon_new_from_icon_name(
-        "audio-volume-high");
+
+    GError * err = NULL;
+    GdkPixbuf * icon = gdk_pixbuf_new_from_resource(
+        "/uk/co/lightscale/pulsetraymixer/img/tray_icon.png",
+        &err);
+    if (!icon) puts(err->message);
+    status_icon = gtk_status_icon_new_from_pixbuf(icon);
 
     make_menu();
 
     g_signal_connect(status_icon, "button-press-event",
                      G_CALLBACK(icon_button_press), NULL);
+}
+
+void tray_icon_cleanup() {
+    g_object_unref(status_icon);
+    gtk_widget_destroy(menu);
 }

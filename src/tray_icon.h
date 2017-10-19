@@ -5,5 +5,6 @@ typedef struct _GtkWidget GtkWidget;
 typedef struct _GtkStatusIcon GtkStatusIcon;
 
 void tray_icon_init();
+void tray_icon_cleanup();
 
 #endif

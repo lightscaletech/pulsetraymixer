@@ -21,6 +21,7 @@ static void main_loop() {
 }
 
 static void cleanup() {
+    tray_icon_cleanup();
     pulse_cleanup();
     mixer_win_free();
 }
