@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gresources>
+    <gresource prefix="/uk/co/lightscale/pulsetraymixer" >
+        <file alias="img/tray_icon.png">../data/img/tray_icon.png</file>
+    </gresource>
+</gresources>
